@@ -1,0 +1,141 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 153 44% 5%;
+    --foreground: 165 84% 95%;
+
+    --card: 153 44% 10%;
+    --card-foreground: 165 84% 95%;
+
+    --popover: 153 44% 8%;
+    --popover-foreground: 165 84% 95%;
+
+    --primary: 152 78% 32%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 152 33% 15%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 152 33% 15%;
+    --muted-foreground: 215 20.2% 75%;
+
+    --accent: 150 30% 18%;
+    --accent-foreground: 152 78% 90%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 46 50% 65%;
+    --input: 152 33% 15%;
+    --ring: 46 50% 55%;
+
+    --radius: 0.5rem;
+    
+    /* Z-index hierarchy */
+    --z-negative: -1;
+    --z-base: 0;
+    --z-dropdown: 50;
+    --z-sticky: 80;
+    --z-drawer: 100;
+    --z-modal: 200;
+    --z-popover: 300;
+    --z-tooltip: 400;
+    --z-toast: 500;
+  }
+
+  .dark {
+    --background: 165 84% 10%;
+    --foreground: 210 40% 98%;
+
+    --card: 165 64% 15%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 165 64% 15%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 152 78% 32%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 165 54% 20%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 165 54% 20%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 165 54% 20%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 46 50% 65%;
+    --input: 165 54% 20%;
+    --ring: 46 50% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-size: 16px;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans text-base;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-medium tracking-tight;
+  }
+
+  h1 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  h2 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl;
+  }
+
+  h4 {
+    @apply text-lg md:text-xl;
+  }
+
+  p, li, input, textarea, button {
+    @apply text-base;
+  }
+}
+
+.card-gradient {
+  @apply bg-gradient-to-br from-card to-secondary/80 backdrop-blur-sm;
+}
+
+.gold-border {
+  @apply border border-gold;
+}
+
+.gold-glow {
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+.gold-highlight {
+  @apply text-gold hover:text-gold-light transition-colors;
+}
+
+.marble-bg {
+  background-image: url('/lovable-uploads/803cb05d-3aed-444e-8e0d-182ccc143f72.png');
+  background-size: cover;
+  background-position: center;
+}

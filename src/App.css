@@ -1,0 +1,94 @@
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #D4AF37);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #D4AF37);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+  font-size: 1.05rem;
+}
+
+.inphinity-container {
+  border: 1px solid #D4AF37;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+  border-radius: var(--radius);
+  background-color: rgba(4, 30, 16, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: var(--z-base);
+}
+
+.card-header-accent {
+  background: linear-gradient(to right, rgba(2, 15, 8, 0.95), rgba(4, 30, 16, 0.95));
+  border-bottom: 1px solid #D4AF37;
+}
+
+/* Brand new styling for selected rows with extremely high visibility */
+tr.selected-task {
+  background-color: rgba(212, 175, 55, 0.2) !important;
+  position: relative;
+  z-index: 10;
+}
+
+tr.selected-task td {
+  background-color: rgba(212, 175, 55, 0.2) !important;
+  border: none !important;
+  position: relative;
+}
+
+/* Add a very obvious left border indicator */
+tr.selected-task td:first-child {
+  border-left: 6px solid #D4AF37 !important;
+}
+
+/* Add a very obvious outline around the entire row */
+tr.selected-task {
+  outline: 3px solid #D4AF37 !important;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.7) !important;
+}
+
+/* Add animated effect for extra visibility */
+@keyframes pulse-gold {
+  0% { box-shadow: 0 0 5px rgba(212, 175, 55, 0.7); }
+  50% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.9); }
+  100% { box-shadow: 0 0 5px rgba(212, 175, 55, 0.7); }
+}
+
+tr.selected-task {
+  animation: pulse-gold 2s infinite;
+}
