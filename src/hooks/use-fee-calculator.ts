@@ -8,9 +8,13 @@ import {
   MultiplierSettings,
   DwellingComplexityMultipliers,
   TaskComplexityMultipliers,
-  DEFAULT_DWELLING_MULTIPLIERS,
-  DEFAULT_TASK_MULTIPLIERS,
+  DEFAULT_DWELLING_MULTIPLIERS as DWELLING_MULTIPLIERS,
+  DEFAULT_TASK_MULTIPLIERS as TASK_MULTIPLIERS,
 } from "@/types/calculator";
+
+// Re-export for external use
+export const DEFAULT_DWELLING_MULTIPLIERS = DWELLING_MULTIPLIERS;
+export const DEFAULT_TASK_MULTIPLIERS = TASK_MULTIPLIERS;
 
 export const useComplexityMultiplier = (
   complexity: number,
