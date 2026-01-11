@@ -319,35 +319,10 @@ export const PublicCalculator = () => {
             <CardTitle className="text-gold">Fee Summary</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Rate Tiers Info */}
-            <div className="bg-secondary/50 rounded-lg p-4">
-              <h4 className="font-medium mb-2 text-foreground">Rate Tiers (Base Fee)</h4>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
-                <div className={size <= 100 ? "text-gold font-medium" : "text-muted-foreground"}>
-                  ≤100 sqm: $260/sqm
-                </div>
-                <div className={size > 100 && size <= 200 ? "text-gold font-medium" : "text-muted-foreground"}>
-                  101-200 sqm: $186/sqm
-                </div>
-                <div className={size > 200 && size <= 400 ? "text-gold font-medium" : "text-muted-foreground"}>
-                  201-400 sqm: $135.5/sqm
-                </div>
-                <div className={size > 400 && size <= 600 ? "text-gold font-medium" : "text-muted-foreground"}>
-                  401-600 sqm: $109/sqm
-                </div>
-                <div className={size > 600 && size <= 815 ? "text-gold font-medium" : "text-muted-foreground"}>
-                  601-815 sqm: $93/sqm
-                </div>
-                <div className={size > 815 ? "text-gold font-medium" : "text-muted-foreground"}>
-                  815+ sqm: $84/sqm
-                </div>
-              </div>
-            </div>
-
             {/* Fee Breakdown */}
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span>Base Fee ({size} sqm × {formatCurrency(fees.rates.baseline)} × {fees.complexityMultiplier}x)</span>
+                <span>Base Fee</span>
                 <span className="font-medium">{formatCurrency(fees.baseFee)}</span>
               </div>
               
@@ -367,7 +342,7 @@ export const PublicCalculator = () => {
               
               {consultationEnabled && (
                 <div className="flex justify-between text-muted-foreground">
-                  <span>+ Consultation ({consultationHours} hrs × {formatCurrency(CONSULTATION_RATE)})</span>
+                  <span>+ Consultation Time</span>
                   <span>{formatCurrency(fees.consultationFee)}</span>
                 </div>
               )}

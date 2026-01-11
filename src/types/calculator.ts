@@ -212,3 +212,23 @@ export const DEFAULT_SCALING_TIERS: ScalingTier[] = [
   { limit: 5000, multiplier: 8.0 },
 ];
 
+// Progressive Bracket Pricing Types
+export interface BracketConfig {
+  limit: number; // Upper limit of this bracket in sqm (Infinity for the last bracket)
+  rate: number; // Rate per sqm for this bracket
+}
+
+export interface BracketBreakdown {
+  bracketName: string; // e.g., "Tier 1", "Tier 2"
+  sqmRange: string; // e.g., "1-100", "101-200"
+  sqmApplied: number; // How many sqm fall in this bracket for this project
+  rate: number; // The rate applied to this bracket (after service type multiplier)
+  subtotal: number; // Subtotal for this bracket
+}
+
+export interface FeeBreakdown {
+  brackets: BracketBreakdown[]; // Detailed breakdown of each bracket
+  totalFee: number; // Total fee before complexity multiplier
+  effectiveRate: number; // Average rate per sqm (totalFee / sqm)
+}
+

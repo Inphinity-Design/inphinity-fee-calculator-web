@@ -10,6 +10,9 @@ import {
   TaskComplexityMultipliers,
   DEFAULT_DWELLING_MULTIPLIERS as DWELLING_MULTIPLIERS,
   DEFAULT_TASK_MULTIPLIERS as TASK_MULTIPLIERS,
+  BracketConfig,
+  BracketBreakdown,
+  FeeBreakdown,
 } from "@/types/calculator";
 
 // Re-export for external use
@@ -37,14 +40,73 @@ export const useTotalProjectArea = (dwellings: Dwelling[]): number => {
   return dwellings.reduce((sum, dwelling) => sum + dwelling.size, 0);
 };
 
-// Get per-sqm rates based on project size
+// Progressive Bracket Configuration
+// Conservative rates calibrated to minimize revenue disruption while eliminating price inversions
+export const CONSERVATIVE_BRACKETS: BracketConfig[] = [
+  { limit: 100, rate: 260 },      // First 100 sqm
+  { limit: 200, rate: 140 },      // Next 100 sqm (101-200)
+  { limit: 400, rate: 88 },       // Next 200 sqm (201-400)
+  { limit: 600, rate: 68 },       // Next 200 sqm (401-600)
+  { limit: 815, rate: 58 },       // Next 215 sqm (601-815)
+  { limit: Infinity, rate: 52 },  // Above 815 sqm
+];
+
+// Service type multipliers (relative to baseline brackets)
+const SERVICE_MULTIPLIERS = {
+  baseline: 1.0,      // Use bracket rates as-is
+  interiors: 0.45,    // Maintains ~$100-120 range at lower tiers
+  masterplan: 0.10,   // Maintains ~$12-25 range at lower tiers
+};
+
+// Calculate progressive fee for a given square meter amount and service type
+export const calculateProgressiveFee = (
+  sqm: number,
+  serviceType: 'baseline' | 'interiors' | 'masterplan' = 'baseline'
+): FeeBreakdown => {
+  const brackets: BracketBreakdown[] = [];
+  let totalFee = 0;
+  let previousLimit = 0;
+
+  const multiplier = SERVICE_MULTIPLIERS[serviceType];
+
+  for (let i = 0; i < CONSERVATIVE_BRACKETS.length; i++) {
+    const bracket = CONSERVATIVE_BRACKETS[i];
+    if (sqm <= previousLimit) break;
+
+    const applicableSize = Math.min(sqm, bracket.limit) - previousLimit;
+    const adjustedRate = bracket.rate * multiplier;
+    const subtotal = applicableSize * adjustedRate;
+
+    brackets.push({
+      bracketName: `Tier ${i + 1}`,
+      sqmRange: `${previousLimit + 1}-${bracket.limit === Infinity ? '∞' : bracket.limit}`,
+      sqmApplied: applicableSize,
+      rate: adjustedRate,
+      subtotal: subtotal,
+    });
+
+    totalFee += subtotal;
+    previousLimit = bracket.limit;
+  }
+
+  return {
+    brackets,
+    totalFee,
+    effectiveRate: sqm > 0 ? totalFee / sqm : 0,
+  };
+};
+
+// Legacy function for backwards compatibility - now uses progressive brackets
 export const getPerSqmRates = (totalSqm: number): { baseline: number; interiors: number; masterplan: number } => {
-  if (totalSqm <= 100) return { baseline: 260, interiors: 120, masterplan: 25 };
-  if (totalSqm <= 200) return { baseline: 186, interiors: 100, masterplan: 17.5 };
-  if (totalSqm <= 400) return { baseline: 135.5, interiors: 80, masterplan: 12.5 };
-  if (totalSqm <= 600) return { baseline: 109, interiors: 65, masterplan: 12.5 };
-  if (totalSqm <= 815) return { baseline: 93, interiors: 60, masterplan: 12 };
-  return { baseline: 84, interiors: 55, masterplan: 12 }; // 1000+ sqm
+  const baselineBreakdown = calculateProgressiveFee(totalSqm, 'baseline');
+  const interiorsBreakdown = calculateProgressiveFee(totalSqm, 'interiors');
+  const masterplanBreakdown = calculateProgressiveFee(totalSqm, 'masterplan');
+
+  return {
+    baseline: baselineBreakdown.effectiveRate,
+    interiors: interiorsBreakdown.effectiveRate,
+    masterplan: masterplanBreakdown.effectiveRate,
+  };
 };
 
 // Default weights for each category (used as baseline for time-based fee adjustment)
@@ -99,14 +161,24 @@ export const getTaskWeightedCategoryFee = (
 
 export const useBaseFee = (totalSqm: number, tasks: Task[]): number => {
   if (totalSqm <= 0) return 0;
-  
-  const rates = getPerSqmRates(totalSqm);
-  
+
+  // Use progressive bracket pricing directly
+  const baselineBreakdown = calculateProgressiveFee(totalSqm, 'baseline');
+  const interiorsBreakdown = calculateProgressiveFee(totalSqm, 'interiors');
+  const masterplanBreakdown = calculateProgressiveFee(totalSqm, 'masterplan');
+
+  // Create rates object for task weighting (using effective rates)
+  const rates = {
+    baseline: baselineBreakdown.effectiveRate,
+    interiors: interiorsBreakdown.effectiveRate,
+    masterplan: masterplanBreakdown.effectiveRate,
+  };
+
   // Calculate weighted fees for each category
   const baselineFee = getTaskWeightedCategoryFee(tasks, 'baseline', totalSqm, rates);
   const interiorsFee = getTaskWeightedCategoryFee(tasks, 'addon-interiors', totalSqm, rates);
   const masterplanFee = getTaskWeightedCategoryFee(tasks, 'addon-masterplan', totalSqm, rates);
-  
+
   return baselineFee + interiorsFee + masterplanFee;
 };
 

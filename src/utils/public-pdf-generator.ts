@@ -184,30 +184,11 @@ export const generatePublicPDF = async (data: PublicPDFData): Promise<void> => {
   doc.setFontSize(16);
   doc.text(formatCurrency(data.fees.totalFee), 70, finalY + 15);
 
-  // Rate Tiers Reference
-  doc.setFontSize(12);
-  doc.setTextColor(0, 0, 0);
-  doc.text("Base Rate Tiers Reference:", 15, finalY + 35);
-
-  doc.setFontSize(9);
-  doc.setTextColor(80, 80, 80);
-  const rateTiers = [
-    "≤100 sqm: $260/sqm",
-    "101-200 sqm: $186/sqm",
-    "201-400 sqm: $135.5/sqm",
-    "401-600 sqm: $109/sqm",
-    "601-815 sqm: $93/sqm",
-    "815+ sqm: $84/sqm",
-  ];
-  rateTiers.forEach((tier, index) => {
-    doc.text(tier, 15 + (index % 3) * 60, finalY + 45 + Math.floor(index / 3) * 6);
-  });
-
   // Disclaimers
   doc.setFontSize(8);
   doc.setTextColor(100, 100, 100);
-  
-  const disclaimerY = finalY + 70;
+
+  const disclaimerY = finalY + 35;
   doc.text(
     "Disclaimer: Fees are estimates and subject to change based on final project scope and requirements.",
     15,
